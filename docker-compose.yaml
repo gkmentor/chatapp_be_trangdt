@@ -1,0 +1,32 @@
+services:
+  mysql:
+    image: mysql:8.0      # Sử dụng phiên bản MySQL 8.0 (hoặc bạn có thể chọn phiên bản khác nếu cần)
+    container_name: mysql-container
+    restart: always       # Tự động khởi động lại container khi gặp lỗi
+    environment:
+      MYSQL_ROOT_PASSWORD: 1     # Đặt mật khẩu cho user "root"
+      MYSQL_DATABASE: chatapp     # Tạo cơ sở dữ liệu mặc định khi container chạy lần đầu
+      MYSQL_USER: trangdt             # Tạo một user tùy chỉnh
+      MYSQL_PASSWORD: 1         # Mật khẩu cho user tùy chỉnh
+    ports:
+      - "3307:3306"        # Mở cổng 3306 để kết nối từ bên ngoài vào MySQL
+    volumes:
+      - mysql_data:/var/lib/mysql  # Lưu trữ dữ liệu MySQL để dữ liệu không mất khi container bị xóa
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql # Tự động chạy file SQL khi container khởi động
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq-container
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: admin      # User mặc định để đăng nhập RabbitMQ
+      RABBITMQ_DEFAULT_PASS: admin     # Password cho user mặc định
+    ports:
+      - "5672:5672"    # Cổng cho ứng dụng kết nối RabbitMQ
+      - "15672:15672"  # Cổng để truy cập RabbitMQ Management UI
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq  # Lưu trữ dữ liệu RabbitMQ
+
+volumes:
+  mysql_data:
+  rabbitmq_data:
