@@ -20,7 +20,6 @@ public class UserRole implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @Transient
     private User user;
