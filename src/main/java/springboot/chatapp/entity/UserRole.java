@@ -9,22 +9,26 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
+@Entity
+@Table(
+        name = "user_roles",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "role_id"})}
+)
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "user_role")
 public class UserRole implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Transient
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "userId")
     private User user;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Transient
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id", nullable = false, referencedColumnName = "id")
     private Role role;
 }
