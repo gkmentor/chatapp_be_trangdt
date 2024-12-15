@@ -4,11 +4,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import springboot.chatapp.config.security.custom.CustomAuthenticationProvider;
 import springboot.chatapp.dto.LoginRequest;
 import springboot.chatapp.dto.LoginResponse;
 import springboot.chatapp.model.CredentialPayload;
@@ -19,15 +20,16 @@ import springboot.chatapp.service.JWTService;
 @Service
 public class AuthServiceImpl implements AuthService {
 
-    private final CustomAuthenticationProvider customAuthenticationProvider;
+    private final AuthenticationProvider authenticationProvider;
     private final JWTService jwtService;
 
     @Override
     public LoginResponse login(LoginRequest loginRequest) {
 
-        final Authentication authentication = this.customAuthenticationProvider.authenticate(
+        final Authentication authentication = this.authenticationProvider.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.email(),
                         loginRequest.password()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         List<String> roles = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
