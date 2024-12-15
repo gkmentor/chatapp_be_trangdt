@@ -35,12 +35,12 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests(
-                authorize -> authorize.requestMatchers("/login", "/ws/**").permitAll()
+                authorize -> authorize.requestMatchers("/api/auth/**", "/ws/**").permitAll()
                         .anyRequest().authenticated()
         );
         http.exceptionHandling(httpSecurityExceptionHandlingConfigurer ->
                 httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint(customAuthenticationEntryPoint));
-        http.authenticationProvider(customAuthenticationProvider);
+        http.authenticationProvider(authenticationProvider);
         http.sessionManagement(
                 sessionManagementConfigurer -> sessionManagementConfigurer.sessionCreationPolicy(
                         SessionCreationPolicy.STATELESS));
@@ -53,7 +53,7 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity httpSecurity) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder = httpSecurity.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.authenticationProvider(customAuthenticationProvider);
+        authenticationManagerBuilder.authenticationProvider(authenticationProvider);
         return authenticationManagerBuilder.build();
     }
 }

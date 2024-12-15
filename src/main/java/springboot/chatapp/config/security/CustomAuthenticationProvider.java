@@ -29,7 +29,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     private final PermissionRepository permissionRepository;
     private final RolePermissionRepository rolePermissionRepository;
 
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -45,6 +44,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         final String email = authentication.getPrincipal().toString();//Trả về thông tin đại diện cho người dùng.(username/ obj UserDetails)
         final String password = authentication.getCredentials().toString();//Trả về thông tin xác thực(password)
         final User user = userRepository.findByEmail(email);
+        System.out.println("user.getPassword(): "+ passwordEncoder().encode("password123") );
 
         if (password == null || !passwordEncoder().matches(password, user.getPassword())) {
             throw new BadCredentialsException("Wrong password");
