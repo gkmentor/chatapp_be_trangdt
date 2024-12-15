@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 import springboot.chatapp.entity.Permission;
 import springboot.chatapp.entity.Role;
 import springboot.chatapp.entity.RolePermission;
@@ -24,6 +25,7 @@ import springboot.chatapp.repository.RoleRepository;
 import springboot.chatapp.repository.UserRepository;
 import springboot.chatapp.repository.UserRoleRepository;
 
+@Component
 @RequiredArgsConstructor
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
