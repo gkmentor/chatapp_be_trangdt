@@ -6,6 +6,13 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import java.security.Key;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -16,27 +23,22 @@ import org.springframework.web.server.ResponseStatusException;
 import springboot.chatapp.entity.User;
 import springboot.chatapp.service.JWTService;
 
-import java.security.Key;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 public class JWTServiceImpl implements JWTService {
-    @Value("jwt.signing.key")
+
+    @Value("${jwt.signing.key}")
     private String signingKey;
 
-    private <T> T extractClaim(String token, Function<Claims, T> claimsResolvers) {
+    @Override
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolvers) {
         final Claims claims = extractAllClaims(token);
         return claimsResolvers.apply(claims);
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parserBuilder().setSigningKey(getSiginKey()).build().parseClaimsJws(token).getBody();
+        return Jwts.parserBuilder().setSigningKey(getSiginKey()).build().parseClaimsJws(token)
+                .getBody();
     }
 
     private Key getSiginKey() {
@@ -66,7 +68,8 @@ public class JWTServiceImpl implements JWTService {
             return Jwts.builder().setClaims(claims)
                     .setSubject(subject)
                     .setIssuedAt(new Date(System.currentTimeMillis()))
-                    .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 168)) // 12 hours
+                    .setExpiration(
+                            new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 168)) // 12 hours
                     .signWith(getSiginKey(), SignatureAlgorithm.HS256)
                     .compact();
         } else {
@@ -78,7 +81,8 @@ public class JWTServiceImpl implements JWTService {
     public boolean isValidToken(String token, UserDetails userDetails) {
         try {
             final String subject = extractUsername(token);
-            return ((subject.equals(userDetails.getUsername()) || subject.equals(userDetails.getUsername())) && !isTokenExpired(token));
+            return ((subject.equals(userDetails.getUsername()) || subject.equals(
+                    userDetails.getUsername())) && !isTokenExpired(token));
         } catch (ExpiredJwtException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token expired");
         }

@@ -20,6 +20,7 @@ public class ChatController {
     @PostMapping("/send")
     public ResponseEntity<?> sendMessage(@RequestBody Message message) {
         System.out.println("message: " + message.getContent());
+
         // Gửi tin nhắn đến các client đã subscribe vào topic
         messagingTemplate.convertAndSend("/topic/messages", message);
 

@@ -13,6 +13,7 @@ import springboot.chatapp.service.AuthService;
 @RequiredArgsConstructor
 @RequestMapping("api/auth")
 public class AuthController {
+
     private final AuthService authService;
 
     @PostMapping("login")
