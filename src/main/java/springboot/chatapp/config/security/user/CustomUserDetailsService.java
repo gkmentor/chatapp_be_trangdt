@@ -19,7 +19,8 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(username);
 
-        return new UserDetailsImpl(user.getEmail(), user.getPassword(), user.getIsDeleted(),
+        return new UserDetailsImpl(user.getEmail(), user.getPassword(),
+                "ACTIVE".equals(user.getStatus()),
                 List.of());
     }
 }

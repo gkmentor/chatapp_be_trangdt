@@ -52,20 +52,20 @@ public class SecurityConfig {
 
         http.httpBasic(AbstractHttpConfigurer::disable);
         http.formLogin(AbstractHttpConfigurer::disable);
-        http.logout(AbstractHttpConfigurer::disable);
         http.csrf(AbstractHttpConfigurer::disable);
+        http.logout(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests(
-                authorize -> authorize.requestMatchers(AUTH_WHITELIST).permitAll()
-                        .anyRequest().authenticated()
-        );
-        http.exceptionHandling(httpSecurityExceptionHandlingConfigurer ->
-                httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint(
-                        customAuthenticationEntryPoint));
-        http.authenticationProvider(authenticationProvider);
-        http.sessionManagement(
-                sessionManagementConfigurer -> sessionManagementConfigurer.sessionCreationPolicy(
-                        SessionCreationPolicy.STATELESS));
+                        authorize -> authorize.requestMatchers(AUTH_WHITELIST).permitAll()
+                                .anyRequest()
+                                .authenticated())
+                .exceptionHandling(
+                        exceptionHandlingConfigurer -> exceptionHandlingConfigurer.authenticationEntryPoint(
+                                customAuthenticationEntryPoint))
+                .sessionManagement(
+                        sessionManagementConfigurer -> sessionManagementConfigurer.sessionCreationPolicy(
+                                SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider);
 
         http.addFilterBefore(new JWTAuthenticationFilter(jwtService, userDetailsService),
                 UsernamePasswordAuthenticationFilter.class);
