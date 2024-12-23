@@ -14,12 +14,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // Kích hoạt một message broker với các prefix
         config.enableSimpleBroker("/topic");
         // Định nghĩa prefix cho các message gửi đến server
-        config.setApplicationDestinationPrefixes("/app");
+//        config.setApplicationDestinationPrefixes("/app");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // Định nghĩa endpoint để client kết nối WebSocket
-        registry.addEndpoint("/ws").setAllowedOriginPatterns("*").withSockJS();
+        registry.addEndpoint("/ws").setAllowedOriginPatterns("*");
     }
 }

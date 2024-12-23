@@ -25,6 +25,6 @@ public class ChatController {
         messagingTemplate.convertAndSend("/topic/messages", message);
 
         // Trả về phản hồi HTTP
-        return ResponseEntity.ok("Message sent successfully");
+        return ResponseEntity.ok(message.getContent());
     }
 }
